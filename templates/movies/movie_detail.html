@@ -1,0 +1,112 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ object.titulo }} | GameFlix</title>
+    <link rel="stylesheet" href="{% static 'css/movie_detail.css' %}">
+</head>
+<body>
+    <div class="cyber-container">
+        <!-- Header con efecto neón -->
+        <header class="cyber-header">
+            <h1 class="neon-text">
+                <span class="flicker-fast">GAME</span><span class="flicker-slow">FLIX</span>
+            </h1>
+            <p class="subtitle">ENTER THE MATRIX</p>
+        </header>
+
+        <!-- Contenido principal -->
+        <main class="cyber-main">
+            <div class="cyber-card">
+                <!-- Portada de la película -->
+                <div class="movie-poster-container">
+                    <div class="holographic-poster">
+                        <img src="{{ object.portada.url }}" alt="{{ object.titulo }}" class="cyber-poster">
+                        <div class="hologram-effect"></div>
+                        {% if object.novedad %}
+                        <div class="new-badge">NUEVO</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Detalles de la película -->
+                <div class="cyber-details">
+                    <h2 class="cyber-title">{{ object.titulo }}</h2>
+                    
+                    <!-- Rating con estrellas -->
+                    <div class="cyber-rating">
+                        {% for i in "12345" %}
+                            <i class="fas fa-star {% if forloop.counter <= object.rating %}active{% endif %}"></i>
+                        {% endfor %}
+                        <span class="rating-value">{{ object.rating }}/5.0</span>
+                    </div>
+                    
+                    <p class="cyber-description">{{ object.descripcion }}</p>
+                    
+                    <!-- Info en paneles estilo terminal -->
+                    <div class="cyber-info-grid">
+                        <div class="info-panel">
+                            <div class="info-header">
+                                <i class="fas fa-calendar-alt"></i>
+                                <h3>RELEASE DATE</h3>
+                            </div>
+                            <p class="info-value">{{ object.año_lanzamiento }}</p>
+                        </div>
+                        
+                        <div class="info-panel">
+                            <div class="info-header">
+                                <i class="fas fa-clock"></i>
+                                <h3>DURATION</h3>
+                            </div>
+                            <p class="info-value">{{ object.duracion }} min</p>
+                        </div>
+                        
+                        <div class="info-panel">
+                            <div class="info-header">
+                                <i class="fas fa-gamepad"></i>
+                                <h3>GENRE</h3>
+                            </div>
+                            <p class="info-value">{{ object.get_genero_display }}</p>
+                        </div>
+                        
+                        <div class="info-panel">
+                            <div class="info-header">
+                                <i class="fas fa-user-secret"></i>
+                                <h3>DIRECTOR</h3>
+                            </div>
+                            <p class="info-value">{{ object.director }}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Botones de acción -->
+                    <div class="cyber-actions">
+                        <a href="" class="cyber-button">
+                            <i class="fas fa-arrow-left"></i> BACK TO LIST
+                        </a>
+                        <a href="#" class="cyber-button primary">
+                            <i class="fas fa-info-circle"></i> MORE INFO
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer futurista -->
+        <footer class="cyber-footer">
+            <div class="scanlines"></div>
+            <div class="footer-content">
+                <p>GAMEFLIX SYSTEMS v3.1.7</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-discord"></i></a>
+                    <a href="#"><i class="fab fa-twitch"></i></a>
+                    <a href="#"><i class="fab fa-steam"></i></a>
+                </div>
+                <p class="copyright">© 2023 CYBER ENTERTAINMENT</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

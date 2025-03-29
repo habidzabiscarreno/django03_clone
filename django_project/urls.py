@@ -16,13 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.conf import settings #esto es para que se puedan ver las imagenes en el navegador
-from django.conf.urls.static import static 
-
+from django.conf import settings  # Esto es para que se puedan ver las imágenes en el navegador
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('post.urls')) # Paso 3: incluir las urls de la app post en el archivo de urls del proyecto
+    path('post', include('post.urls')),  # Paso 3: incluir las URLs de la app post
+    path('', include('movies.urls')),  # Paso 4: incluir las URLs de la app users
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) #esto es para que se puedan ver las imagenes en el nabegador
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # Esto es para que se puedan ver las imágenes en el navegador

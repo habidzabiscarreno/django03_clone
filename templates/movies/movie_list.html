@@ -1,0 +1,142 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineGamer - Catálogo de Películas</title>
+    <link rel="stylesheet" href="{% static 'css/movie_list.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="main-header">
+        <h1><i class="fas fa-film"></i> CineGamer Collection</h1>
+        <p class="subtitle">El catálogo definitivo para gamers cinéfilos</p>
+    </header>
+
+    <div class="filters">
+        <div class="search-box">
+            <input type="text" placeholder="Buscar películas...">
+            <button><i class="fas fa-search"></i></button>
+        </div>
+        <div class="filter-options">
+            <select id="genre-filter">
+                <option value="">Todos los géneros</option>
+                <option value="ACC">Acción</option>
+                <option value="COM">Comedia</option>
+                <option value="DRA">Drama</option>
+                <option value="TER">Terror</option>
+                <option value="SCI">Ciencia Ficción</option>
+                <option value="ANI">Animación</option>
+                <option value="DOC">Documental</option>
+            </select>
+            <select id="sort-filter">
+                <option value="">Ordenar por</option>
+                <option value="newest">Novedades</option>
+                <option value="rating">Mejor valoradas</option>
+                <option value="title">A-Z</option>
+                <option value="duration">Duración</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="movie-list">
+        {% for movie in pelicula_list %}
+        <div class="movie-card {% if movie.destacada %}featured{% endif %}" 
+             data-genre="{{ movie.genero }}" 
+             data-rating="{{ movie.rating|default:'4.5' }}"
+             data-year="{{ movie.año_lanzamiento }}"
+             data-duration="{{ movie.duracion }}"
+            data-title="{{ movie.titulo }}">
+            {% if movie.novedad %}
+            <div class="new-badge">NUEVO</div>
+            {% endif %}
+            <img src="{{ movie.portada.url }}" alt="Portada de {{ movie.titulo }}" loading="lazy">
+            
+            <div class="movie-content">
+                <a href="{% url 'movie_detail' movie.pk %}"><h2>{{ movie.titulo }}</h2></a>
+                
+                <div class="movie-meta">
+                    <span class="movie-year">{{ movie.año_lanzamiento }}</span>
+                    <span class="movie-rating">
+                        <i class="fas fa-star"></i> {{ movie.rating|default:"4.5" }}
+                    </span>
+                </div>
+                <div class="movie-info">
+                    <span class="movie-genre" data-genre-code="{{ movie.genero }}">
+                        {% if movie.genero == 'ACC' %}Acción
+                        {% elif movie.genero == 'COM' %}Comedia
+                        {% elif movie.genero == 'DRA' %}Drama
+                        {% elif movie.genero == 'TER' %}Terror
+                        {% elif movie.genero == 'SCI' %}Ciencia Ficción
+                        {% elif movie.genero == 'ANI' %}Animación
+                        {% elif movie.genero == 'DOC' %}Documental
+                        {% else %}{{ movie.genero }}
+                        {% endif %}
+                    </span>
+                    <span class="movie-duration"><i class="far fa-clock"></i> {{ movie.duracion }} min</span>
+                </div>
+                
+                <div class="movie-actions">
+                    <a href="#" class="btn btn-primary"><i class="fas fa-play"></i> Ver trailer</a>
+                    <a href="#" class="btn btn-secondary"><i class="fas fa-info-circle"></i> Detalles</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <footer class="main-footer">
+        <p>CineGamer Collection &copy; 2023 - Todos los derechos reservados</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        // Filtrado por género
+        document.getElementById('genre-filter').addEventListener('change', function() {
+            const selectedGenre = this.value;
+            const movies = document.querySelectorAll('.movie-card');
+            
+            movies.forEach(movie => {
+                const movieGenre = movie.getAttribute('data-genre');
+                if (selectedGenre === '' || movieGenre === selectedGenre) {
+                    movie.style.display = 'block';
+                } else {
+                    movie.style.display = 'none';
+                }
+            });
+        });
+        
+        // Ordenación
+        document.getElementById('sort-filter').addEventListener('change', function() {
+            const sortBy = this.value;
+            const movieList = document.querySelector('.movie-list');
+            const movies = Array.from(document.querySelectorAll('.movie-card'));
+            
+            if (sortBy === 'newest') {
+                movies.sort((a, b) => b.getAttribute('data-year') - a.getAttribute('data-year'));
+            } else if (sortBy === 'rating') {
+                movies.sort((a, b) => b.getAttribute('data-rating') - a.getAttribute('data-rating'));
+            } else if (sortBy === 'title') {
+                movies.sort((a, b) => {
+                    const titleA = a.getAttribute('data-title').toLowerCase();
+                    const titleB = b.getAttribute('data-title').toLowerCase();
+                    return titleA.localeCompare(titleB);
+                });
+            } else if (sortBy === 'duration') {
+                movies.sort((a, b) => b.getAttribute('data-duration') - a.getAttribute('data-duration'));
+            }
+            
+            // Reinsertar películas ordenadas
+            movies.forEach(movie => {
+                movieList.appendChild(movie);
+            });
+        });
+    </script>
+</body>
+</html>
